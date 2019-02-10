@@ -14,7 +14,7 @@ class LoginController extends Controller
     	if (!$token = auth()->attempt($request->only('email', 'password'))) {
     		return response()->json([
                    'errors' => [
-                       'email' => ['Хэрэглэгчийн нэр буруу байна']
+                       'email' => ['Хэрэглэгч эсвэл Нууц үг буруу байна']
                    ]
     		], 422);
     	}
