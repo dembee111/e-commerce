@@ -5,7 +5,8 @@ namespace App\Cart;
 use App\Cart\Money;
 use App\Models\ProductVariation;
 use App\Models\ShippingMethod;
-use App\Models\User;
+use App\Models\user;
+
 
 class Cart 
 {

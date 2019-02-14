@@ -14,7 +14,7 @@ class Order extends Model
 	const PAYMENT_FAILED = 'payment_failed';
 	const COMPLETED = 'completed';
 
-	protected $fillable = [
+	protected $fillable = [         
          'status',
          'address_id',
          'shipping_method_id'
@@ -24,7 +24,7 @@ class Order extends Model
 	{
         parent::boot();
 
-        static::creating(function($oder){
+        static::creating(function($order){
         	$order->status = self::PENDING;
         });
 	}
