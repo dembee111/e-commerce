@@ -6,6 +6,7 @@ use App\Cart\Cart;
 use App\Events\Order\OrderCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Orders\OrderStoreRequest;
+use App\Http\Resources\OrderResource;
 use App\Models\user;
 use Illuminate\Http\Request;
 
@@ -15,24 +16,35 @@ class OrderController extends Controller
 
 	public function __construct()
 	{
-		$this->middleware(['auth:api']);
+        $this->middleware(['auth:api']);
+		$this->middleware(['auth:api', 'cart.sync', 'cart.isnotempty'])->only('store');
 
 	
 	}
+    public function index(Request $request)
+    {
+        $orders = $request->user()->orders()
+                  ->with(['products', 'address', 'shippingMethod'])
+                  ->latest()
+                  ->paginate(10);
+        return OrderResource::collection($orders);
+    }
+
 
     public function store(OrderStoreRequest $request, Cart $cart)
     {
-        if ($cart->isEmpty()) {
-           return response(null, 400);
-        }
+
     	$order = $this->createOrder($request, $cart);
 
         $order->products()->sync($cart->products()->forSyncing());
 
+
     	// $order->products()->sync($products);
 
         event(new OrderCreated($order));
-        
+
+        return new OrderResource($order);
+
     }
 
     public function createOrder(Request $request, Cart $cart)
