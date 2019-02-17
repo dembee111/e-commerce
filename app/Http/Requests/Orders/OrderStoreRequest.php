@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Orders;
 
 use App\Models\Address;
+use App\Models\PaymentMethod;
 use App\Rules\ValidShippingMethod;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -26,11 +27,18 @@ class OrderStoreRequest extends FormRequest
      */
     public function rules()
     {
+
         
         return [
             'address_id' => [
                'required',
                Rule::exists('addresses', 'id')->where(function ($builder){
+                    $builder->where('user_id', $this->user()->id);
+               })
+            ],
+             'payment_method_id' => [
+               'required',
+               Rule::exists('payment_methods', 'id')->where(function ($builder){
                     $builder->where('user_id', $this->user()->id);
                })
             ],

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware\Cart;
 
+use App\Cart\Cart;
 use Closure;
 
 class Sync
