@@ -3,8 +3,11 @@
 namespace App\Providers;
 
 use App\Cart\Cart;
+use App\Cart\Payments\Gateway;
+use App\Cart\Payments\Gateways\StripeGateway;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Stripe\Stripe;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        Stripe::setApiKey(config('services.stripe.secret'));
     }
 
     /**
@@ -34,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
 
             
             return new Cart($app->auth->user());
+        });
+
+        $this->app->singleton(Gateway::class, function(){
+            return new StripeGateway();
         });
     }
 }
